@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Company Financial & Shariah Analyzer</title>
+
+    <!-- Bootstrap 5.3.3 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap"
+        rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+    <style>
+        :root {
+            --bg-light: #f8fafc;
+            --card-bg: rgba(255, 255, 255, 0.85);
+            --border-color: rgba(15, 23, 42, 0.08);
+            --accent-blue: #0284c7;
+            --accent-green: #10b981;
+            --accent-red: #ef4444;
+            --text-dark: #0f172a;
+            --text-muted: #64748b;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f1f5f9 0%, #cbd5e1 100%);
+            color: var(--text-dark);
+            font-family: 'Outfit', sans-serif;
+            min-height: 100vh;
+            padding-bottom: 80px;
+        }
+
+        .header-section {
+            margin-top: 60px;
+            margin-bottom: 40px;
+        }
+
+        .title-glow {
+            font-size: 3rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #0284c7 0%, #0d9488 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -0.03em;
+        }
+
+        .subtitle {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+            font-weight: 400;
+        }
+
+        .glass-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(15, 23, 42, 0.05);
+            padding: 30px;
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.3s ease;
+        }
+
+        .glass-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 40px rgba(15, 23, 42, 0.1);
+            border-color: rgba(2, 132, 199, 0.25);
+        }
+
+        .search-container {
+            max-width: 650px;
+            margin: 0 auto;
+        }
+
+        .search-input-group {
+            background: rgba(255, 255, 255, 0.95);
+            border: 1px solid rgba(15, 23, 42, 0.12);
+            border-radius: 14px;
+            padding: 6px;
+            box-shadow: 0 4px 12px rgba(15, 23, 42, 0.03);
+            transition: border-color 0.25s, box-shadow 0.25s;
+        }
+
+        .search-input-group:focus-within {
+            border-color: var(--accent-blue);
+            box-shadow: 0 0 15px rgba(2, 132, 199, 0.15);
+        }
+
+        .search-input-group input {
+            background: transparent;
+            border: none;
+            color: var(--text-dark);
+            font-size: 1.05rem;
+            padding: 12px 18px;
+            outline: none;
+            width: 100%;
+        }
+
+        .search-input-group input::placeholder {
+            color: #94a3b8;
+        }
+
+        .btn-search {
+            background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+            border: none;
+            border-radius: 10px;
+            color: white;
+            font-weight: 600;
+            padding: 0 24px;
+            transition: all 0.2s;
+        }
+
+        .btn-search:hover {
+            opacity: 0.95;
+            box-shadow: 0 0 12px rgba(2, 132, 199, 0.3);
+            transform: scale(1.02);
+        }
+
+        .badge-status {
+            font-size: 1.25rem;
+            font-weight: 700;
+            border-radius: 12px;
+            padding: 14px 24px;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            width: 100%;
+            justify-content: center;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 25px;
+        }
+
+        .badge-status-compliant {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.08) 0%, rgba(5, 150, 105, 0.15) 100%);
+            border: 2px solid var(--accent-green);
+            color: #065f46;
+            box-shadow: 0 5px 15px rgba(16, 185, 129, 0.08);
+            animation: pulse-green 2s infinite;
+        }
+
+        .badge-status-non-compliant {
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.08) 0%, rgba(220, 38, 38, 0.15) 100%);
+            border: 2px solid var(--accent-red);
+            color: #991b1b;
+            box-shadow: 0 5px 15px rgba(239, 68, 68, 0.08);
+            animation: pulse-red 2s infinite;
+        }
+
+        @keyframes pulse-green {
+            0% {
+                box-shadow: 0 0 8px rgba(16, 185, 129, 0.1);
+            }
+
+            50% {
+                box-shadow: 0 0 16px rgba(16, 185, 129, 0.2);
+            }
+
+            100% {
+                box-shadow: 0 0 8px rgba(16, 185, 129, 0.1);
+            }
+        }
+
+        @keyframes pulse-red {
+            0% {
+                box-shadow: 0 0 8px rgba(239, 68, 68, 0.1);
+            }
+
+            50% {
+                box-shadow: 0 0 16px rgba(239, 68, 68, 0.2);
+            }
+
+            100% {
+                box-shadow: 0 0 8px rgba(239, 68, 68, 0.1);
+            }
+        }
+
+        .ratio-item {
+            background: rgba(15, 23, 42, 0.02);
+            border: 1px solid rgba(15, 23, 42, 0.04);
+            border-radius: 14px;
+            padding: 16px;
+            margin-bottom: 16px;
+            transition: background-color 0.2s;
+        }
+
+        .ratio-item:hover {
+            background: rgba(15, 23, 42, 0.04);
+        }
+
+        .ratio-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .ratio-title {
+            font-weight: 600;
+            font-size: 1rem;
+            color: var(--text-dark);
+        }
+
+        .ratio-badge {
+            font-size: 0.8rem;
+            font-weight: 700;
+            padding: 4px 10px;
+            border-radius: 6px;
+        }
+
+        .ratio-badge-pass {
+            background: rgba(16, 185, 129, 0.12);
+            color: #065f46;
+            border: 1px solid rgba(16, 185, 129, 0.25);
+        }
+
+        .ratio-badge-fail {
+            background: rgba(239, 68, 68, 0.12);
+            color: #991b1b;
+            border: 1px solid rgba(239, 68, 68, 0.25);
+        }
+
+        .progress-container {
+            height: 8px;
+            background: rgba(15, 23, 42, 0.06);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 8px;
+        }
+
+        .progress-bar-custom {
+            height: 100%;
+            border-radius: 4px;
+            transition: width 1s ease-out;
+        }
+
+        .progress-bar-success {
+            background: linear-gradient(90deg, #10b981, #34d399);
+        }
+
+        .progress-bar-danger {
+            background: linear-gradient(90deg, #ef4444, #f87171);
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+
+        .info-cell {
+            background: rgba(15, 23, 42, 0.02);
+            border: 1px solid rgba(15, 23, 42, 0.04);
+            padding: 12px 16px;
+            border-radius: 12px;
+        }
+
+        .info-label {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-bottom: 4px;
+        }
+
+        .info-value {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text-dark);
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .number-font {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.95rem;
+        }
+
+        .reason-box {
+            background: rgba(239, 68, 68, 0.05);
+            border-left: 4px solid var(--accent-red);
+            border-radius: 8px;
+            padding: 12px 16px;
+            margin-bottom: 20px;
+        }
+
+        .reason-box ul {
+            margin: 0;
+            padding-left: 20px;
+        }
+
+        .reason-box li {
+            color: #991b1b;
+            font-size: 0.95rem;
+            margin-bottom: 4px;
+        }
+
+        .reason-box li:last-child {
+            margin-bottom: 0;
+        }
+
+        hr {
+            border-color: rgba(15, 23, 42, 0.08);
+        }
+
+        .nav-link-custom {
+            color: var(--accent-blue);
+            text-decoration: none;
+            transition: color 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .nav-link-custom:hover {
+            color: #0ea5e9;
+            text-decoration: underline;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container py-4">
+
+        <!-- Navigation Bar -->
+        <nav class="navbar navbar-expand navbar-light rounded-4 mb-4 shadow-sm px-4" style="background: rgba(255, 255, 255, 0.8); border: 1px solid rgba(15, 23, 42, 0.08); backdrop-filter: blur(10px);">
+            <div class="container-fluid px-0">
+                <a class="navbar-brand fw-bold text-dark d-flex align-items-center gap-2" href="/">
+                    <i class="bi bi-shield-fill-check text-success fs-4"></i>
+                    <span>Shariah Analyzer</span>
+                </a>
+                <div class="collapse navbar-collapse justify-content-end">
+                    <ul class="navbar-nav gap-2">
+                        <li class="nav-item">
+                            <a class="nav-link fw-semibold rounded-3 px-3 py-2 text-dark" href="/" style="transition: all 0.2s;">
+                                <i class="bi bi-house-door me-1"></i> Home
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link fw-semibold rounded-3 px-3 py-2 active" href="/analyzer" style="background: rgba(2, 132, 199, 0.08); color: #0284c7;">
+                                <i class="bi bi-calculator me-1"></i> Analyzer
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Header Section -->
+        <div class="header-section text-center">
+            <h1 class="title-glow mb-2">Financial & Shariah Analyzer</h1>
+            <p class="subtitle">Evaluate company fundamentals and Shariah compliance using AAOIFI/S&P screening standards</p>
+        </div>
+        
+        <div class="row g-4">
+
+            <!-- Left Column: Input Form & Financial Details -->
+            <div class="col-lg-6 col-12">
+                <div class="glass-card">
+                    <h4 class="fw-bold mb-4 text-dark"><i class="bi bi-input-cursor-text me-2 text-primary"></i>Company Financial Inputs</h4>
+                    
+                    <form method="POST" action="/evaluate" id="evaluate-form">
+                        <!-- Company Metadata Inputs -->
+                        <h6 class="fw-bold mb-3 text-info"><i class="bi bi-building me-2"></i>Company Profile</h6>
+                        <div class="row g-3 mb-4">
+                            <div class="col-md-8">
+                                <label class="form-label fw-semibold text-dark small mb-1">Company Name <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control form-control-sm rounded-3" name="company_name" id="company_name" value="{{ company.name if company else '' }}" placeholder="e.g. Apple Inc." required>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label fw-semibold text-dark small mb-1">Ticker Symbol</label>
+                                <input type="text" class="form-control form-control-sm rounded-3" name="symbol" id="symbol" value="{{ company.symbol if company else '' }}" placeholder="e.g. AAPL">
+                            </div>
+                        </div>
+
+                        <!-- Profit & Loss Statement Inputs -->
+                        <h6 class="fw-bold mb-3 text-info"><i class="bi bi-journal-text me-2"></i>Profit & Loss Statement</h6>
+                        <div class="row g-3 mb-4">
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold text-dark small mb-1">Industry Type <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control form-control-sm rounded-3" name="industry" id="form_industry" value="{{ form_data.industry if form_data else (company.industry if company else '') }}" placeholder="e.g. Software, Banking, Retail" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold text-dark small mb-1">Total Revenue (₹) <span class="text-danger">*</span></label>
+                                <input type="number" step="any" class="form-control form-control-sm rounded-3" name="total_revenue" id="form_total_revenue" value="{{ form_data.total_revenue if form_data else '' }}" placeholder="Enter total revenue" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold text-dark small mb-1">Haram / Prohibited Revenue (₹)</label>
+                                <input type="number" step="any" class="form-control form-control-sm rounded-3" name="haram_revenue" id="form_haram_revenue" value="{{ form_data.haram_revenue if form_data else '0' }}" placeholder="Enter haram revenue">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold text-dark small mb-1">Interest Income (₹)</label>
+                                <input type="number" step="any" class="form-control form-control-sm rounded-3" name="interest_income" id="form_interest_income" value="{{ form_data.interest_income if form_data else '0' }}" placeholder="Enter interest income">
+                            </div>
+                        </div>
+
+                        <!-- Balance Sheet Inputs -->
+                        <h6 class="fw-bold mb-3 text-info"><i class="bi bi-file-earmark-ruled me-2"></i>Balance Sheet</h6>
+                        <div class="row g-3 mb-4">
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold text-dark small mb-1">Total Assets (₹) <span class="text-danger">*</span></label>
+                                <input type="number" step="any" class="form-control form-control-sm rounded-3" name="total_assets" id="form_total_assets" value="{{ form_data.total_assets if form_data else '' }}" placeholder="Enter total assets" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold text-dark small mb-1">Interest-Bearing Debt (₹) <span class="text-danger">*</span></label>
+                                <input type="number" step="any" class="form-control form-control-sm rounded-3" name="interest_bearing_debt" id="form_interest_bearing_debt" value="{{ form_data.interest_bearing_debt if form_data else '' }}" placeholder="Enter interest-bearing debt" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold text-dark small mb-1">Non-Compliant Investments (₹)</label>
+                                <input type="number" step="any" class="form-control form-control-sm rounded-3" name="non_compliant_investments" id="form_non_compliant_investments" value="{{ form_data.non_compliant_investments if form_data else '0' }}" placeholder="Enter non-compliant investments">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold text-dark small mb-1">Cash Holdings (₹) <span class="text-danger">*</span></label>
+                                <input type="number" step="any" class="form-control form-control-sm rounded-3" name="cash_holdings" id="form_cash_holdings" value="{{ form_data.cash_holdings if form_data else '' }}" placeholder="Enter cash holdings" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold text-dark small mb-1">Receivables (₹) <span class="text-danger">*</span></label>
+                                <input type="number" step="any" class="form-control form-control-sm rounded-3" name="receivables" id="form_receivables" value="{{ form_data.receivables if form_data else '' }}" placeholder="Enter receivables" required>
+                            </div>
+                        </div>
+
+                        <div class="d-flex gap-2">
+                            <button type="submit" class="btn btn-search flex-grow-1 py-2">
+                                <i class="bi bi-shield-fill-check me-2"></i>Evaluate Shariah Compliance
+                            </button>
+                            <button type="button" class="btn btn-outline-secondary rounded-3 px-3" onclick="resetForm()">
+                                <i class="bi bi-arrow-counterclockwise"></i>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Right Column: Shariah Screening Module or Guidelines -->
+            <div class="col-lg-6 col-12">
+                {% if company and company.shariah %}
+                <div class="glass-card h-100">
+                    <h4 class="fw-bold mb-4 text-dark"><i class="bi bi-shield-fill-check me-2 text-success"></i>Shariah Compliance Screening</h4>
+
+                    <!-- Overall Status Badge -->
+                    {% if company.shariah.compliant %}
+                    <div class="badge-status badge-status-compliant mb-3">
+                        <i class="bi bi-check-circle-fill fs-4"></i> Shariah Compliant
+                    </div>
+                    <div class="mb-4">
+                        <a href="/kyc" class="btn btn-success btn-lg w-100 py-3 rounded-3 shadow fw-bold d-flex align-items-center justify-content-center gap-2" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); border: none; font-size: 1.05rem;">
+                            <i class="bi bi-person-check-fill fs-4"></i>
+                            <span>Proceed to KYC Process</span>
+                        </a>
+                    </div>
+                    {% else %}
+                    <div class="badge-status badge-status-non-compliant">
+                        <i class="bi bi-x-circle-fill fs-4"></i> Non-Shariah Compliant
+                    </div>
+                    {% endif %}
+
+                    <!-- Failed Reasons -->
+                    {% if not company.shariah.compliant and company.shariah.reasons %}
+                    <div class="reason-box">
+                        <div class="fw-bold mb-2"><i class="bi bi-exclamation-octagon-fill me-2"></i>Fails Compliance Criteria:</div>
+                        <ul>
+                            {% for reason in company.shariah.reasons %}
+                            <li>{{ reason }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    {% endif %}
+
+                    <!-- Detailed Ratios -->
+                    <div class="ratios-section mb-4">
+                        <h5 class="fw-bold mb-3 text-secondary">Screening Rules & Ratios</h5>
+
+                        <!-- Business Activity -->
+                        <div class="ratio-item">
+                            <div class="ratio-header">
+                                <div>
+                                    <span class="ratio-title">Business Sector & Revenue</span>
+                                    <div class="text-muted small mt-1">Excludes Banking, Insurance, Alcohol, Tobacco, Gambling, Weapons, Adult Ent.</div>
+                                </div>
+                                <div>
+                                    {% if company.shariah.industry_compliant %}
+                                    <span class="ratio-badge ratio-badge-pass">Halal Sector</span>
+                                    {% else %}
+                                    <span class="ratio-badge ratio-badge-fail">Forbidden Sector</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Debt Ratio -->
+                        <div class="ratio-item">
+                            <div class="ratio-header">
+                                <div>
+                                    <span class="ratio-title">Debt / Total Assets</span>
+                                    <div class="text-muted small mt-1">Total Debt ({{ company.shariah.details.debt_val }}) / Total Assets ({{ company.shariah.details.assets_val }})</div>
+                                </div>
+                                <div class="text-end">
+                                    <span class="fw-bold number-font">{{ company.shariah.details.debt_ratio_pct }}</span>
+                                    <span class="text-muted small d-block">Limit: &lt; 33%</span>
+                                </div>
+                            </div>
+                            <div class="progress-container">
+                                <div class="progress-bar-custom {% if company.shariah.details.debt_is_compliant %}progress-bar-success{% else %}progress-bar-danger{% endif %}"
+                                    data-progress="{{ company.shariah.details.debt_progress_pct }}">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Cash Ratio -->
+                        <div class="ratio-item">
+                            <div class="ratio-header">
+                                <div>
+                                    <span class="ratio-title">Cash & Securities / Total Assets</span>
+                                    <div class="text-muted small mt-1">Cash ({{ company.shariah.details.cash_val }}) + Non-Compliant Investments ({{ company.shariah.details.non_compliant_investments_val }}) / Total Assets ({{ company.shariah.details.assets_val }})</div>
+                                </div>
+                                <div class="text-end">
+                                    <span class="fw-bold number-font">{{ company.shariah.details.cash_ratio_pct }}</span>
+                                    <span class="text-muted small d-block">Limit: &lt; 33%</span>
+                                </div>
+                            </div>
+                            <div class="progress-container">
+                                <div class="progress-bar-custom {% if company.shariah.details.cash_is_compliant %}progress-bar-success{% else %}progress-bar-danger{% endif %}"
+                                    data-progress="{{ company.shariah.details.cash_progress_pct }}">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Receivables Ratio -->
+                        <div class="ratio-item">
+                            <div class="ratio-header">
+                                <div>
+                                    <span class="ratio-title">Receivables / Total Assets</span>
+                                    <div class="text-muted small mt-1">Receivables ({{ company.shariah.details.receivable_val }}) / Total Assets ({{ company.shariah.details.assets_val }})</div>
+                                </div>
+                                <div class="text-end">
+                                    <span class="fw-bold number-font">{{ company.shariah.details.receivable_ratio_pct }}</span>
+                                    <span class="text-muted small d-block">Limit: &lt; 49%</span>
+                                </div>
+                            </div>
+                            <div class="progress-container">
+                                <div class="progress-bar-custom {% if company.shariah.details.receivable_is_compliant %}progress-bar-success{% else %}progress-bar-danger{% endif %}"
+                                    data-progress="{{ company.shariah.details.receivable_progress_pct }}">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Non-Halal Income Ratio -->
+                        <div class="ratio-item">
+                            <div class="ratio-header">
+                                <div>
+                                    <span class="ratio-title">Non-Halal Income / Revenue</span>
+                                    <div class="text-muted small mt-1">Haram ({{ company.shariah.details.haram_revenue_val }}) + Interest ({{ company.shariah.details.interest_income_val }}) / Total Rev ({{ company.shariah.details.revenue_val }})</div>
+                                </div>
+                                <div class="text-end">
+                                    <span class="fw-bold number-font">{{ company.shariah.details.income_ratio_pct }}</span>
+                                    <span class="text-muted small d-block">Limit: &lt; 5%</span>
+                                </div>
+                            </div>
+                            <div class="progress-container">
+                                <div class="progress-bar-custom {% if company.shariah.details.income_is_compliant %}progress-bar-success{% else %}progress-bar-danger{% endif %}"
+                                    data-progress="{{ company.shariah.details.income_progress_pct }}">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-4 p-3 rounded-4" style="background: rgba(255,255,255,0.03); border: 1px dashed rgba(255,255,255,0.08);">
+                        <div class="small text-muted d-flex">
+                            <i class="bi bi-info-circle me-2 text-info fs-5"></i>
+                            <div>
+                                <strong>Calculations Disclosure:</strong> Formulas are calculated using the user-provided or yfinance-retrieved total assets ({{ company.shariah.details.assets_val }}) as the denominator, adhering to modern Shariah (AAOIFI) screening standards.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% else %}
+                <div class="glass-card h-100 d-flex flex-column justify-content-center align-items-center text-center p-5">
+                    <div class="rounded-circle bg-info bg-opacity-10 p-4 mb-4 text-info">
+                        <i class="bi bi-shield-shaded fs-1"></i>
+                    </div>
+                    <h3 class="fw-bold text-dark mb-3">Shariah Screening Guidelines</h3>
+                    <p class="text-muted mb-4 px-3" style="font-size: 0.95rem; line-height: 1.6;">
+                        This analyzer implements standard AAOIFI screening rules. Submit values manually on the left, or search a global stock ticker above to populate financial statements.
+                    </p>
+                    <div class="w-100 text-start">
+                        <div class="d-flex align-items-center gap-3 mb-3 p-3 rounded-3" style="background: rgba(15,23,42,0.02); border: 1px solid rgba(15,23,42,0.04);">
+                            <i class="bi bi-check-circle-fill text-success fs-4"></i>
+                            <div>
+                                <strong class="d-block text-dark small">Business Activity Screen</strong>
+                                <span class="text-muted extra-small">Forbidden: conventional banking, insurance, weapons, gambling, pork, adult entertainment.</span>
+                            </div>
+                        </div>
+                        <div class="d-flex align-items-center gap-3 mb-3 p-3 rounded-3" style="background: rgba(15,23,42,0.02); border: 1px solid rgba(15,23,42,0.04);">
+                            <i class="bi bi-bar-chart-fill text-info fs-4"></i>
+                            <div>
+                                <strong class="d-block text-dark small">Financial Ratio Screens</strong>
+                                <span class="text-muted extra-small">Debt &lt; 33%, Cash & Investments &lt; 33%, Receivables &lt; 49% (Denominator: Total Assets).</span>
+                            </div>
+                        </div>
+                        <div class="d-flex align-items-center gap-3 p-3 rounded-3" style="background: rgba(15,23,42,0.02); border: 1px solid rgba(15,23,42,0.04);">
+                            <i class="bi bi-cash-coin text-warning fs-4"></i>
+                            <div>
+                                <strong class="d-block text-dark small">Non-Halal Income Screen</strong>
+                                <span class="text-muted extra-small">Non-halal revenue + interest income must not exceed 5% of total revenue.</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+
+        </div>
+
+    </div>
+
+    <script>
+        document.querySelectorAll('[data-progress]').forEach(el => {
+            const progress = el.getAttribute('data-progress');
+            if (progress) {
+                el.style.width = progress + '%';
+            }
+        });
+
+        function resetForm() {
+            if (confirm("Are you sure you want to clear the form?")) {
+                document.getElementById('evaluate-form').reset();
+            }
+        }
+    </script>
+
+</body>
+
+</html>

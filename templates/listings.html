@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Compliant Directory - Shariah Analyzer</title>
+
+    <!-- Bootstrap 5.3.3 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+    <style>
+        :root {
+            --bg-light: #f8fafc;
+            --card-bg: rgba(255, 255, 255, 0.85);
+            --border-color: rgba(15, 23, 42, 0.08);
+            --accent-blue: #0284c7;
+            --accent-green: #10b981;
+            --accent-red: #ef4444;
+            --text-dark: #0f172a;
+            --text-muted: #64748b;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f1f5f9 0%, #cbd5e1 100%);
+            color: var(--text-dark);
+            font-family: 'Outfit', sans-serif;
+            min-height: 100vh;
+            padding-bottom: 80px;
+        }
+
+        .header-section {
+            margin-top: 40px;
+            margin-bottom: 40px;
+        }
+
+        .title-glow {
+            font-size: 2.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #0284c7 0%, #0d9488 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -0.03em;
+        }
+
+        .subtitle {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+            font-weight: 400;
+        }
+
+        .glass-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(15, 23, 42, 0.05);
+            padding: 30px;
+        }
+
+        .table-responsive-custom {
+            border-radius: 14px;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+        }
+
+        .table-custom {
+            margin-bottom: 0;
+        }
+
+        .table-custom th {
+            background: rgba(15, 23, 42, 0.04);
+            color: var(--text-dark);
+            font-weight: 600;
+            font-size: 0.9rem;
+            padding: 14px 16px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .table-custom td {
+            padding: 14px 16px;
+            vertical-align: middle;
+            border-bottom: 1px solid var(--border-color);
+            font-size: 0.95rem;
+        }
+
+        .table-custom tr:last-child td {
+            border-bottom: none;
+        }
+
+        .table-custom tr {
+            transition: background-color 0.2s;
+        }
+
+        .table-custom tr:hover {
+            background: rgba(15, 23, 42, 0.02);
+        }
+
+        .search-input-group {
+            background: rgba(255, 255, 255, 0.95);
+            border: 1px solid rgba(15, 23, 42, 0.12);
+            border-radius: 14px;
+            padding: 6px;
+            box-shadow: 0 4px 12px rgba(15, 23, 42, 0.03);
+            max-width: 500px;
+            transition: border-color 0.25s, box-shadow 0.25s;
+        }
+
+        .search-input-group:focus-within {
+            border-color: var(--accent-blue);
+            box-shadow: 0 0 15px rgba(2, 132, 199, 0.15);
+        }
+
+        .search-input-group input {
+            background: transparent;
+            border: none;
+            color: var(--text-dark);
+            font-size: 1rem;
+            padding: 10px 14px;
+            outline: none;
+            width: 100%;
+        }
+
+        .number-font {
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 600;
+        }
+
+        .ratio-badge-pass {
+            background: rgba(16, 185, 129, 0.12);
+            color: #065f46;
+            border: 1px solid rgba(16, 185, 129, 0.25);
+            font-size: 0.8rem;
+            font-weight: 700;
+            padding: 4px 8px;
+            border-radius: 6px;
+            display: inline-block;
+        }
+
+        .btn-search {
+            background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+            border: none;
+            border-radius: 10px;
+            color: white;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        .btn-search:hover {
+            opacity: 0.95;
+            box-shadow: 0 0 12px rgba(2, 132, 199, 0.3);
+            transform: scale(1.02);
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container py-4">
+
+        <!-- Navigation Bar -->
+        <nav class="navbar navbar-expand navbar-light rounded-4 mb-4 shadow-sm px-4" style="background: rgba(255, 255, 255, 0.8); border: 1px solid rgba(15, 23, 42, 0.08); backdrop-filter: blur(10px);">
+            <div class="container-fluid px-0">
+                <a class="navbar-brand fw-bold text-dark d-flex align-items-center gap-2" href="/">
+                    <i class="bi bi-shield-fill-check text-success fs-4"></i>
+                    <span>Shariah Analyzer</span>
+                </a>
+                <div class="collapse navbar-collapse justify-content-end">
+                    <ul class="navbar-nav gap-2">
+                        <li class="nav-item">
+                            <a class="nav-link fw-semibold rounded-3 px-3 py-2 text-dark" href="/" style="transition: all 0.2s;">
+                                <i class="bi bi-house-door me-1"></i> Home
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link fw-semibold rounded-3 px-3 py-2 text-dark" href="/analyzer" style="transition: all 0.2s;">
+                                <i class="bi bi-calculator me-1"></i> Analyzer
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link fw-semibold rounded-3 px-3 py-2 active" href="/listings" style="background: rgba(2, 132, 199, 0.08); color: #0284c7;">
+                                <i class="bi bi-list-stars me-1"></i> Compliant Directory
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Header Section -->
+        <div class="header-section text-center">
+            <h1 class="title-glow mb-2">Shariah Compliant Directory</h1>
+            <p class="subtitle">A persistent archive of screened companies that passed AAOIFI / S&P financial screening checks</p>
+        </div>
+
+        <div class="glass-card">
+            {% if listings %}
+            <!-- Search & Filters -->
+            <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
+                <div class="search-input-group d-flex align-items-center flex-grow-1">
+                    <i class="bi bi-search ms-2 text-muted fs-5"></i>
+                    <input type="text" id="search-box" onkeyup="filterTable()" placeholder="Search directory by company name or symbol...">
+                </div>
+                <div class="text-muted small fw-semibold">
+                    Total Compliant Companies: <span class="badge bg-success bg-opacity-10 text-success rounded-pill px-3 py-2 fs-6">{{ listings|length }}</span>
+                </div>
+            </div>
+
+            <!-- Table of listings -->
+            <div class="table-responsive table-responsive-custom">
+                <table class="table table-custom align-middle" id="listings-table">
+                    <thead>
+                        <tr>
+                            <th>Company Details</th>
+                            <th>Industry</th>
+                            <th>Total Assets</th>
+                            <th>Debt/Assets</th>
+                            <th>Cash/Assets</th>
+                            <th>Receivables/Assets</th>
+                            <th>Haram Income/Rev</th>
+                            <th class="text-center">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in listings %}
+                        <tr>
+                            <td>
+                                <div class="fw-bold text-dark">{{ item.company_name }}</div>
+                                <span class="badge rounded-pill mt-1" style="background: rgba(2, 132, 199, 0.08); color: #0284c7; border: 1px solid rgba(2, 132, 199, 0.1); font-size: 0.75rem;">
+                                    {{ item.symbol }}
+                                </span>
+                            </td>
+                            <td>
+                                <span class="text-muted small fw-semibold">{{ item.industry }}</span>
+                            </td>
+                            <td>
+                                <div class="number-font text-secondary">
+                                    <!-- Display formatted total assets -->
+                                    {% if item.total_assets >= 1e12 %}
+                                        ₹{{ (item.total_assets / 1e12)|round(2) }}T
+                                    {% elif item.total_assets >= 1e9 %}
+                                        ₹{{ (item.total_assets / 1e9)|round(2) }}B
+                                    {% elif item.total_assets >= 1e6 %}
+                                        ₹{{ (item.total_assets / 1e6)|round(2) }}M
+                                    {% else %}
+                                        ₹{{ "{:,.2f}".format(item.total_assets) }}
+                                    {% endif %}
+                                </div>
+                            </td>
+                            <td>
+                                <div class="number-font text-success">{{ item.debt_ratio_pct }}</div>
+                                <span class="text-muted small" style="font-size: 0.7rem;">Limit: &lt;33%</span>
+                            </td>
+                            <td>
+                                <div class="number-font text-success">{{ item.cash_ratio_pct }}</div>
+                                <span class="text-muted small" style="font-size: 0.7rem;">Limit: &lt;33%</span>
+                            </td>
+                            <td>
+                                <div class="number-font text-success">{{ item.receivable_ratio_pct }}</div>
+                                <span class="text-muted small" style="font-size: 0.7rem;">Limit: &lt;49%</span>
+                            </td>
+                            <td>
+                                <div class="number-font text-success">{{ item.income_ratio_pct }}</div>
+                                <span class="text-muted small" style="font-size: 0.7rem;">Limit: &lt;5%</span>
+                            </td>
+                            <td class="text-center">
+                                <div class="d-flex justify-content-center gap-2">
+                                    <a href="/analyzer?load={{ item.id }}" class="btn btn-search btn-sm py-2 px-3">
+                                        <i class="bi bi-arrow-repeat me-1"></i> Analyze
+                                    </a>
+                                    <form method="POST" action="/listings/delete/{{ item.id }}" onsubmit="return confirm('Are you sure you want to delete this listing?');" class="m-0">
+                                        <button type="submit" class="btn btn-outline-danger btn-sm py-2 px-3 rounded-3">
+                                            <i class="bi bi-trash3-fill"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <!-- Empty state -->
+            <div class="text-center py-5">
+                <div class="rounded-circle bg-success bg-opacity-10 p-4 mb-4 d-inline-block text-success">
+                    <i class="bi bi-journal-x fs-1"></i>
+                </div>
+                <h3 class="fw-bold text-dark mb-2">No Compliant Companies Yet</h3>
+                <p class="text-muted mb-4 px-3" style="max-width: 480px; margin: 0 auto; font-size: 0.95rem; line-height: 1.6;">
+                    Run screening assessments in the Shariah Analyzer. Companies flagged as Shariah Compliant will be logged here automatically.
+                </p>
+                <a href="/analyzer" class="btn btn-search px-4 py-2">
+                    <i class="bi bi-plus-circle-fill me-2"></i>Screen A Company Now
+                </a>
+            </div>
+            {% endif %}
+        </div>
+
+    </div>
+
+    <script>
+        function filterTable() {
+            const input = document.getElementById("search-box");
+            const filter = input.value.toLowerCase();
+            const table = document.getElementById("listings-table");
+            if (!table) return;
+            const tr = table.getElementsByTagName("tr");
+
+            // Loop through all table rows (excluding header)
+            for (let i = 1; i < tr.length; i++) {
+                const tdName = tr[i].getElementsByTagName("td")[0];
+                const tdIndustry = tr[i].getElementsByTagName("td")[1];
+                if (tdName) {
+                    const textValue = tdName.textContent || tdName.innerText;
+                    const indValue = tdIndustry ? (tdIndustry.textContent || tdIndustry.innerText) : "";
+                    if (textValue.toLowerCase().indexOf(filter) > -1 || indValue.toLowerCase().indexOf(filter) > -1) {
+                        tr[i].style.display = "";
+                    } else {
+                        tr[i].style.display = "none";
+                    }
+                }
+            }
+        }
+    </script>
+
+</body>
+
+</html>
